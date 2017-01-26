@@ -5,5 +5,5 @@ var request = function request (opts) {
 		funcName: opts.funcName,
 		funcArgs: opts.funcArgs
 	};
-	theRouter.request(req);
+	Router.request(req);
 };

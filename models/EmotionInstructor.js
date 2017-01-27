@@ -1,5 +1,24 @@
 var EmotionInstructor = (function(){
-	var emotionalStateHistory = [], // each bundle has a snapshot, list of emotional states, userId, template, text
+	var emotionalStateHistory = [],
+
+		templates = [emotionInstructionTemplate({
+			text: 'Lately sound has been __cool__.  Try and feel __cool__.',
+			types: ['sound','pleasure'],
+			tags: '*',
+			antiTags: '*'
+		}),
+		emotionInstructionTemplate({
+			text: 'You should def feel __cool__.',
+			types: ['sound','action','pleasure'],
+			tags: ['good'],
+			antiTags: '*'
+		}),
+		emotionInstructionTemplate({
+			text: 'You should DEF feel meta __cool__ world peace.',
+			types: ['meta'],
+			tags: ['good'],
+			antiTags: '*'
+		})],
 
 		historyByUser = function historyByUser (userId) {
 			if (typeof userId == 'number') {
@@ -66,34 +85,48 @@ var EmotionInstructor = (function(){
 		},
 
 		filterEmoStates = function filterEmoStates (emoStates,userId) {
-			// minimum of 1 emo state
-			if (emoStates.length == 1) return emoStates;
-			// filter most recent by this user
+			// filter most recent by this user, keeping min of 1 emoState
 			var latest = latestByUser(userId);
-			emoStates = emoStates.filter(function(eS){
+			emoStates = emoStates.filterMin(function(eS){
 				return eS.date != latest.snapshot.date;
-			});
-			if (emoStates.length == 1) return emoStates;
+			},1);
 			// filter any with no continua with intensity > 0.5
-			emoStates = emoStates.filter(function(eS){
-				var returnable = 0;
-				for (var i=0; i < eS.continua.length; i++) {
-					if (eS.continua[i].intensity > 0.5) {
-						returnable = 1;
-						break;
-					}
-				}
-				if (returnable) return eS;
-			});
+			emoStates = emoStates.filterMin(function(eS){
+				return eS.continua.some(function(c){
+					return c.intensity > 0.5;
+				});
+			},1);
 			return emoStates;
+		},
+
+		getTemplate = function getTemplate (emoStates, userId) {
+			var types = emoStates.mapTo('type');
+			// only templates who have at least one type included on yr type list
+			var templateOptions = templates.filterMin(function(t){
+				return t.types.some(function(type){
+					return types.indexOf(type) > -1;
+				});
+			},1);
+			// TODO:  something with tags / antitags!
+			// choose template not in history, if you can
+			templateOptions = templateOptions.filterMin(function(t){
+				var inHistory = emotionalStateHistory.some(function(eSB){
+					throw 'yo err';
+					eSB.template.equals(t);
+				});
+				return !inHistory;
+			},1);
+
+			// choose one at random
+			return templateOptions[Math.floor(Math.random()*templateOptions.length)];
 		};
 
 	var instructEmotion = function instructEmotion (userId,snapshot) {
 		getEmotionalStates(userId,snapshot).then(function(emoStates){
 			return filterEmoStates(emoStates,userId);
 		}).then(function(emoStates){
-			var template = getTemplate(emoStateBundle);
-			var text = applyTemplate(userId,emo,template);
+			var template = getTemplate(emoStates,userId);
+			var text = template.apply(emoStates,userId);
 			return emotionalStateBundle({
 				emotionalStates: emoStates,
 				userId: userId,
@@ -101,9 +134,9 @@ var EmotionInstructor = (function(){
 				template: template,
 				text: text
 			});
-		}).then(function(esB){
-			registerBundle(esB);
-			SoundInterface.instructEmotion(esB);
+		}).then(function(eSB){
+			emotionalStateHistory.push(eSB);
+			SoundInterface.instructEmotion(eSB);
 		}).catch(function(err){
 			throw "Error in EmotionInstructor:  " + err;
 		});

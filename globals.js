@@ -75,3 +75,47 @@ function uniqDestr (ary) {
 	}
 	return ary;
 }
+
+Array.prototype.filterMin = function filterMin (func,min) {
+	var ary = this,
+		min = min || 0,
+		remaining = ary.length,
+		filtered = [],
+		test;
+	for (var i=0; i < ary.length; i++) {
+		// run function no matter what
+		test = func(ary[i],i,ary);
+		if (min - filtered.length == ary.length - i) {
+			filtered.push(ary[filtered.length]);
+		} else if (test) {
+			filtered.push(ary[i]);
+		}
+	}
+	return filtered;
+}
+
+Array.prototype.filterMinRPack = function filterMin (func,min) {
+	var ary = this,
+		min = min || 0,
+		remaining = ary.length,
+		filtered = [],
+		test;
+	for (var i=0; i < ary.length; i++) {
+		// run function no matter what
+		test = func(ary[i],i,ary);
+		if (min - filtered.length == ary.length - i) {
+			filtered.push(ary[i]);
+		} else if (test) {
+			filtered.push(ary[i]);
+		}
+	}
+	return filtered;
+}
+
+function aryEqlShlw (ary1,ary2) {
+	return ary1.every(function(a1item){
+		return ary2.indexOf(a1item) > -1;
+	}) && ary2.every(function(a2item){
+		return ary1.indexOf(a2item) > -1;
+	});
+}

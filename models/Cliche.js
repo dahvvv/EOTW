@@ -13,10 +13,29 @@ var Cliche = (function(){
 				return emotionalState({
 					type: opts.type,
 					date: snapshot.date,
-					keywords: [/* some keywords */],
-					continua: [/* some continua */],
-					tags: [/* some tags */],
-					antiTags: [/* some antiTags */]
+					keywords: ['sad','happy'],
+					continua: [{
+						'name': 'sad-happy',
+						'level': 0.2,
+						'intensity': 0.7
+					},
+					{
+						'name': 'bored-excited',
+						'level': 0.6,
+						'intensity': 0.4
+					},
+					{
+						'name': 'timid-confident',
+						'level': 0.95,
+						'intensity': 0.8
+					},
+					{
+						'name': 'anxious-calm',
+						'level': 0.2,
+						'intensity': 0.1
+					}],
+					tags: ['good','doggie'],
+					antiTags: ['dang','crap']
 				});
 			},
 				instructEmotion = function (text) {

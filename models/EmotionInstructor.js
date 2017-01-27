@@ -3,16 +3,16 @@ var EmotionInstructor = (function(){
 
 		getEmotionalStates = function getEmotionalStates (userId,snapshot) {
 			var soundState = new Promise(function(res,rej){
-				res(SoundWorld.getEmotionalState());
+				res(SoundInterface.getEmotionalState());
 			});
 			var actionState = new Promise(function(res,rej){
-				res(ActionWorld.getEmotionalState());
+				res(ActionInterface.getEmotionalState());
 			});
 			var pleasureState = new Promise(function(res,rej){
-				res(PleasureWorld.getEmotionalState());
+				res(PleasureInterface.getEmotionalState());
 			});
 			var timeState = new Promise(function(res,rej){
-				res(TimePerceptionWorld.getEmotionalState());
+				res(TimePerceptionInterface.getEmotionalState());
 			});
 			var metaState = new Promise(function(res,rej){
 				res(this.getEmotionalState());
@@ -43,7 +43,7 @@ var EmotionInstructor = (function(){
 			var template = getTemplate(emoState);
 			return applyTemplate(userId,emo,template);
 		}).then(function(emoText){
-			SoundWorld.instructEmotion(emoText);
+			SoundInterface.instructEmotion(emoText);
 		}).catch(function(err){
 			throw "Error in EmotionInstructor:  " + err;
 		});

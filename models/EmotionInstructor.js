@@ -1,21 +1,21 @@
 var EmotionInstructor = (function(){
 	var emotionalStateHistory = [],
 
-		getEmotionalStates = function getEmotionalStates (userId,snapshot) {
+		getEmotionalStates = function getEmotionalStates (userId,snap) {
 			var soundState = new Promise(function(res,rej){
-				res(SoundInterface.getEmotionalState());
+				res(SoundInterface.getEmotionalState(userId,snap));
 			});
 			var actionState = new Promise(function(res,rej){
-				res(ActionInterface.getEmotionalState());
+				res(ActionInterface.getEmotionalState(userId,snap));
 			});
 			var pleasureState = new Promise(function(res,rej){
-				res(PleasureInterface.getEmotionalState());
+				res(PleasureInterface.getEmotionalState(userId,snap));
 			});
 			var timeState = new Promise(function(res,rej){
-				res(TimePerceptionInterface.getEmotionalState());
+				res(TimePerceptionInterface.getEmotionalState(userId,snap));
 			});
 			var metaState = new Promise(function(res,rej){
-				res(this.getEmotionalState());
+				res(this.getEmotionalState(userId,snap));
 			})
 			return Promise.all([soundState,actionState,pleasureState,timeState,metaState]);
 		},

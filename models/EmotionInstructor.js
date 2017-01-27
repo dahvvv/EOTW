@@ -1,15 +1,15 @@
 var EmotionInstructor = (function(){
-	var emotionalStateHistory = [], // each bundle has a snapshot, list of emotional states, user, template, text
+	var emotionalStateHistory = [], // each bundle has a snapshot, list of emotional states, userId, template, text
 
 		historyByUser = function historyByUser (userId) {
 			if (typeof userId == 'number') {
-				return emotionalStateHistory.filter(function(eS){
-					return eS.userId == userId;
+				return emotionalStateHistory.filter(function(eSB){
+					return eSB.userId == userId;
 				});
 			} else {
 				var map = {};
-				emotionalStateHistory.forEach(function(eS){
-					map[eS.userId] = eS;
+				emotionalStateHistory.forEach(function(eSB){
+					map[eSB.userId] = eSB;
 				});
 				return map;
 			}
@@ -17,17 +17,17 @@ var EmotionInstructor = (function(){
 
 		latestByUser = function latestByUser (userId) {
 			var latest = historyByUser(userId)
-				.sort(function(eSBundle1,eSBundle2){
-					return eSBundle1.snapshot.date - eSBundle2.snapshot.date;
+				.sort(function(eSB1,eSB2){
+					return eSB1.snapshot.date - eSB2.snapshot.date;
 				})[0];
 			if (latest == undefined) {
-				latest = {
+				latest = emotionalStateBundle({
+					emotionalStates: [],
 					snapshot: { date: 0.0 },
-					keywords: [],
-					continua: [],
-					tags: [],
-					antiTags: []
-				};
+					userId: null,
+					template: null,
+					text: ''
+				});
 			}
 			return latest;
 		},
@@ -91,11 +91,19 @@ var EmotionInstructor = (function(){
 	var instructEmotion = function instructEmotion (userId,snapshot) {
 		getEmotionalStates(userId,snapshot).then(function(emoStates){
 			return filterEmoStates(emoStates,userId);
-		}).then(function(emoStateBundle){
+		}).then(function(emoStates){
 			var template = getTemplate(emoStateBundle);
-			return applyTemplate(userId,emo,template);
-		}).then(function(emoText){
-			SoundInterface.instructEmotion(emoText);
+			var text = applyTemplate(userId,emo,template);
+			return emotionalStateBundle({
+				emotionalStates: emoStates,
+				userId: userId,
+				snapshot: snapshot,
+				template: template,
+				text: text
+			});
+		}).then(function(esB){
+			registerBundle(esB);
+			SoundInterface.instructEmotion(esB);
 		}).catch(function(err){
 			throw "Error in EmotionInstructor:  " + err;
 		});

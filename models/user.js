@@ -5,11 +5,12 @@ var user = (function(){
 			if (this[req.funcName] == undefined) {
 				throw "Error: user has no function named '" + req.funcName + "'";
 			}
-			this[req.funcName].apply(req,req.funcArgs);
+			this[req.funcName].apply(this,req.funcArgs);
 		},
 		instructEmotion = function instructEmotion () {
 			var snap = Cliche.newSnapshot();
-			EmotionInstructor.instructEmotion(this.id, snap);
+			var userId = this.id;
+			EmotionInstructor.instructEmotion(userId, snap);
 		};
 
 	return function (opts) {

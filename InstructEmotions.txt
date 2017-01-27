@@ -9,4 +9,5 @@
 	- Filtering the resulting bundle of emotional states to pick the ones that'll be used.  There's a minimum of 1 state.  Recent ones from this user are discouraged.  Ones with high continua intensity levels are encouraged.
 	- Select an Emotional Instruction template, based on the filtered emostate.  The filtered state's constituent states will limit the options, its tags and antitags will limit them further.  Then take one not in history, if u can.
 	- Apply the template to create text.
+	- Add emotional state bundle of states, snapshot, user, template, and text to the front of emotionalStateHistory
 	- Send text to sound out.

@@ -1,3 +1,3 @@
 var ActionInterface = Cliche.newPrivateInterface({
-	type: 'sound'
+	type: 'action'
 });

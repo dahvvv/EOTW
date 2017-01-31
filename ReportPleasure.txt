@@ -1,0 +1,11 @@
+1.	Request comes in to router with user id, function name, and args.
+2.	Router finds user with said id, routes request to said user.
+3.	User receives request, calls ReportPleasure.  This involves:
+ - Asking Cliché to create a new Snapshot
+ - Calling updatePleasure.  Averages user's pleasureReports over the last five minutes, including the new one.  Return new userPleasure.
+ - Forwarding the Snapshot, user id, funcname ReportPleasure and args reportedPleasure and userPleasure to the PleasurePursuer.
+4.	PleasurePursuer calls ReportPleasure with userid, timestamp, and reportedPleasure.  This involves:
+	- Calling pursuePleasure (with user, reportedPleasure, and userPleasure)
+		- Calling pursuePleasure on the soundworld, actionworld, and timeperceptionworld, passing each one the reportedPleasure and userId and userPleasure
+			- Actionworld:  if userPleasure is above um idk 0.5, repeat the user's most recent action, if it was over a minute ago.  Also if reportedPleasure is positive, register a new like for this user and actioncategory.  if userpleasure < 0.5, give user a new action from whatever category they most recently liked.
+			- Soundworld (just call it, it'll change shit based on degree of severity)

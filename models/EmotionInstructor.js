@@ -1,5 +1,7 @@
 var EmotionInstructor = (function(){
-	var emotionalStateHistory = [],
+	var api,
+
+		emotionalStateHistory = [],
 
 		templates = [emotionInstructionTemplate({
 			text: 'Lately sound has been __cool__.  Try and feel __cool__.',
@@ -73,7 +75,7 @@ var EmotionInstructor = (function(){
 		getEmotionalState = function getEmotionalState (userId, snapshot) {
 			// return emotionalState based on most recent emotional state given to this user
 			var latest = latestByUser(userId);
-			return emotionalState({
+			return emoState = emotionalState({
 				type: 'meta',
 				date: snapshot.date,
 				timeDiff: snapshot.date - latest.snapshot.date,
@@ -101,7 +103,7 @@ var EmotionInstructor = (function(){
 
 		getTemplate = function getTemplate (emoStates, userId) {
 			var types = emoStates.mapTo('type');
-			// only templates who have at least one type included on yr type list
+			// only templates whose 'types' array has at least one overlap with yr 'types' array (derived from yr passed-in emoStates array, each emoState has a type)
 			var templateOptions = templates.filterMin(function(t){
 				return t.types.some(function(type){
 					return types.indexOf(type) > -1;
@@ -122,6 +124,7 @@ var EmotionInstructor = (function(){
 		};
 
 	var instructEmotion = function instructEmotion (userId,snapshot) {
+		console.log('EmotionInstructor.instructEmotion()', userId, snapshot);
 		getEmotionalStates(userId,snapshot).then(function(emoStates){
 			return filterEmoStates(emoStates,userId);
 		}).then(function(emoStates){
@@ -141,7 +144,10 @@ var EmotionInstructor = (function(){
 			throw "Error in EmotionInstructor:  " + err;
 		});
 	};
-	return {
+
+	api = {
 		instructEmotion: instructEmotion
 	};
+	api.print = print('EmotionInstructor', api);
+	return api;
 }());

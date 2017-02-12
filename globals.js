@@ -119,3 +119,23 @@ function aryEqlShlw (ary1,ary2) {
 		return ary1.indexOf(a2item) > -1;
 	});
 }
+
+function print (modelname, api) {
+	return function () {
+		console.log('-----PRINT ' + modelname.toUpperCase() + '-----');
+		console.log('PROPS:\n');
+		var methods = [];
+		for (var prop in api) {
+			if (typeof api[prop] == 'function') {
+				methods.push(prop);
+			} else {
+				console.log('\t' + prop + ':\t' + api[prop]);
+			}
+		}
+		console.log('METHODS:\n');
+		methods.forEach(function(method){
+			console.log('\t' + modelname + '.' + method + '()');
+		});
+		console.log('\n');
+	};
+}

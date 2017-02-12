@@ -6,7 +6,9 @@ var emotionInstructionTemplate = function (opts) {
 		var keywords = emoStates.mapTo('keywords');
 		flattenDestr(keywords);
 		uniqDestr(keywords);
-		return opts.text.replace(/\b__\w+__\b/g,keywords[0]);
+		return opts.text.replace(/\b__\w+__\b/g, function () {
+			return keywords[Math.floor(Math.random()*keywords.length)];
+		});
 		// TODO:  make work with more than one keyword!
 	},
 
